@@ -9,8 +9,6 @@
 @class NSButton;
 @class NSApplication;
 
-void RestartWithCorrectGarbageCollectionSettingIfNecessary();
-
 @interface FScriptAppController : NSObject
 {
   IBOutlet FSInterpreterView *interpreterView;  
@@ -19,7 +17,6 @@ void RestartWithCorrectGarbageCollectionSettingIfNecessary();
   IBOutlet NSTextField *fontSizeUI;             
   IBOutlet NSButton *shouldJournalUI;
   IBOutlet NSButton *confirmWhenQuittingUI;
-  IBOutlet NSButton *runWithObjCAutomaticGarbageCollectionUI;
   IBOutlet NSButton *displayObjectBrowserAtLaunchTimeUI;
   IBOutlet NSButton *automaticallyIntrospectDeclaredPropertiesUI;
   

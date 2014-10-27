@@ -39,6 +39,15 @@
 
 #define ESCAPE '\033'
 
+@interface ArgumentsWindow : NSWindow
+@end
+
+@implementation ArgumentsWindow
+- (BOOL)canBecomeKeyWindow {
+  return YES;
+}
+@end
+
 const int FSObjectBrowserBottomBarHeight = 22;
 
 static Class NSManagedObjectClass;
@@ -895,7 +904,7 @@ static NSMutableArray *customButtons = nil;
       NSWindow *argumentsWindow;
       NSMethodSignature *signature = [selectedObject methodSignatureForSelector:selector];
       
-      argumentsWindow = [[NSWindow alloc] initWithContentRect:NSMakeRect(100,100,baseWidth,baseHeight) styleMask:NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO];
+      argumentsWindow = [[ArgumentsWindow alloc] initWithContentRect:NSMakeRect(100,100,baseWidth,baseHeight) styleMask:NSResizableWindowMask backing:NSBackingStoreBuffered defer:NO];
       [argumentsWindow setMinSize:NSMakeSize(240,baseHeight+22)];
       [argumentsWindow setMaxSize:NSMakeSize(1400,baseHeight+22)];
       
@@ -1861,7 +1870,7 @@ static NSMutableArray *customButtons = nil;
       [arguments addObject:[result result]];
     else
     {
-      NSMutableString *errorArgumentString = [NSString stringWithFormat:@"Argument %ld %@", (long)(i+1), [result errorMessage]];
+      NSString *errorArgumentString = [NSString stringWithFormat:@"Argument %ld %@", (long)(i+1), [result errorMessage]];
 
       [result inspectBlocksInCallStack];
       [f selectTextAtIndex:i];

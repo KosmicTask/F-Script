@@ -19,83 +19,6 @@
 
 extern char **environ;
 
-void RestartWithCorrectGarbageCollectionSettingIfNecessary()
-{
-  /* Inspired by code provided by Scotty of the Mac Developer Network. */
-  /* See http://www.mac-developer-network.com/podcasts/lnc/lnc036/     */
-
-  // NSLog(@"Entering in RestartWithCorrectGarbageCollectionSettingIfNecessary()");
-  
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  
-  NSDictionary* garbageCollectionUserDefaults = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"FScriptRunWithObjCAutomaticGarbageCollection", nil];
-  [[NSUserDefaults standardUserDefaults] registerDefaults:garbageCollectionUserDefaults];
-
-  BOOL requireRestart = NO;
-  
-  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptRunWithObjCAutomaticGarbageCollection"] == YES && [NSGarbageCollector defaultCollector] == nil)
-  { 
-    // NSLog(@"unsetenv OBJC_DISABLE_GC");
-    unsetenv("OBJC_DISABLE_GC");
-    requireRestart = YES;
-  }
-  else if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptRunWithObjCAutomaticGarbageCollection"] == NO && [NSGarbageCollector defaultCollector])
-  {
-    // NSLog(@"setenv OBJC_DISABLE_GC");
-    setenv("OBJC_DISABLE_GC", "YES", 1);
-    requireRestart = YES;
-  } 
-
-  if (requireRestart)
-  { 
-    // NSLog(@"Require restart");
-          
-    cpu_type_t cpuTypes[2];
-    
-#ifdef __ppc__
-    // 32-bit PowerPC code
-    cpuTypes[0] = CPU_TYPE_POWERPC;
-#else
-#ifdef __ppc64__
-    cpuTypes[0] = CPU_TYPE_POWERPC64;
-#else
-#ifdef __i386__ 
-// 32-bit Intel code
-    cpuTypes[0] = CPU_TYPE_I386;
-#else
-#ifdef __x86_64__
-// 64-bit Intel code
-    cpuTypes[0] = CPU_TYPE_X86_64;
-#else
-#error UNKNOWN ARCHITECTURE
-#endif
-#endif
-#endif
-#endif
-        
-    cpuTypes[1] = CPU_TYPE_ANY;  // Things should work without this entry, but we use it just in case of an unforeseen problem
-
-    size_t ocount;
-    posix_spawnattr_t attribute;
-    posix_spawnattr_init(&attribute);
-    posix_spawnattr_setbinpref_np(&attribute, 2, cpuTypes, &ocount);
-    
-    const int spawnReturnValue = posix_spawn(NULL, (*_NSGetArgv())[0], NULL, &attribute, *_NSGetArgv(), environ);
-    
-    if(spawnReturnValue == 0)
-    {
-      exit(0);
-    }
-    else
-    {
-      perror("posix_spawn() failed, continuing...");
-    }
-  }
-
-  [pool release];
-}
-
-
 NSString  *findPathToFileInLibraryWithinUserDomain(NSString *fileName)
 /*" Returns the path to the first occurrence of fileName in a Library directory within the User domain. "*/
 {
@@ -154,7 +77,6 @@ NSString  *findPathToFileInLibraryWithinSystemDomain(NSString *fileName)
   [registrationDict setObject:@"NO"  forKey:@"FScriptShouldJournal"];
   [registrationDict setObject:@"NO"  forKey:@"FScriptConfirmWhenQuitting"];
   [registrationDict setObject:@"YES" forKey:@"FScriptDisplayObjectBrowserAtLaunchTime"];
-  [registrationDict setObject:@"YES" forKey:@"FScriptRunWithObjCAutomaticGarbageCollection"]; 
   [registrationDict setObject:@"YES" forKey:@"FScriptAutomaticallyIntrospectDeclaredProperties"];  
   
   [registrationDict setObject:@"NO"  forKey:@"FScriptShowDemoAssistant"];
@@ -198,8 +120,8 @@ NSString  *findPathToFileInLibraryWithinSystemDomain(NSString *fileName)
     
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptLoadSystemFrameworks"])
     [self loadSystemFrameworks];
-  
-  if (floor(NSAppKitVersionNumber) > 949) 
+
+  if (floor(NSAppKitVersionNumber) > 949)
   {
     // 10.6 or later system
     NSString *systemFrameworksDirectoryPath;
@@ -219,7 +141,7 @@ NSString  *findPathToFileInLibraryWithinSystemDomain(NSString *fileName)
 
     }  
   }
-  
+//
   if (!repositoryPath || ![fileManager fileExistsAtPath:repositoryPath isDirectory:&b])
   {
     NSError  *error = nil;
@@ -300,7 +222,7 @@ NSString  *findPathToFileInLibraryWithinSystemDomain(NSString *fileName)
     NSLog(@"fatal problem: the repository file \"%@\" is not a directory or is not writable", repositoryPath);
     exit(1);
   }
-  
+
   // Initialize the random number generator with random seeds
   srandomdev();
   srand48(random());
@@ -312,12 +234,12 @@ NSString  *findPathToFileInLibraryWithinSystemDomain(NSString *fileName)
   [[interpreterView interpreter] setShouldJournal:[[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptShouldJournal"]];
   if (repositoryPath) [[NSUserDefaults standardUserDefaults] setObject:[repositoryPath stringByAppendingPathComponent:@"journal.txt"] forKey:@"FScriptJournalName"];
   [[interpreterView interpreter] setJournalName:[[NSUserDefaults standardUserDefaults] stringForKey:@"FScriptJournalName"]];
-
+//
   // JG 
   servicesProvider = [[FSServicesProvider alloc] initWithFScriptInterpreterViewProvider:self];
   [servicesProvider registerExports];
-  
-  // Latent block processing 
+//
+//  // Latent block processing 
   latentPath = [[[NSUserDefaults standardUserDefaults] stringForKey:@"FScriptRepositoryPath"] stringByAppendingPathComponent:@"fs_latent"];
 
   if (latentPath && [[NSFileManager defaultManager] fileExistsAtPath:latentPath])
@@ -350,12 +272,12 @@ NSString  *findPathToFileInLibraryWithinSystemDomain(NSString *fileName)
     }  
   }
   //----------
-    
+
   [[interpreterView window] makeKeyAndOrderFront:nil];
   
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptDisplayObjectBrowserAtLaunchTime"])
     [[interpreterView interpreter] browse];
-    
+
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptShowDemoAssistant"])
     [[[FSDemoAssistant alloc] initWithInterpreterView:interpreterView] activate];
 }
@@ -477,7 +399,6 @@ NSString  *findPathToFileInLibraryWithinSystemDomain(NSString *fileName)
   [fontSizeUI setDoubleValue:[interpreterView fontSize]];
   [shouldJournalUI setState:[[interpreterView interpreter] shouldJournal]];
   [confirmWhenQuittingUI setState:[[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptConfirmWhenQuitting"]];
-  [runWithObjCAutomaticGarbageCollectionUI setState:[[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptRunWithObjCAutomaticGarbageCollection"]]; 
   [displayObjectBrowserAtLaunchTimeUI setState:[[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptDisplayObjectBrowserAtLaunchTime"]];
   [automaticallyIntrospectDeclaredPropertiesUI setState:[[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptAutomaticallyIntrospectDeclaredProperties"]];
 
@@ -508,33 +429,6 @@ NSString  *findPathToFileInLibraryWithinSystemDomain(NSString *fileName)
   else if (sender == automaticallyIntrospectDeclaredPropertiesUI)
   {
     [[NSUserDefaults standardUserDefaults] setBool:[automaticallyIntrospectDeclaredPropertiesUI state] forKey:@"FScriptAutomaticallyIntrospectDeclaredProperties"];
-  }
-  else if (sender == runWithObjCAutomaticGarbageCollectionUI)
-  {
-    NSAlert *alert = [[NSAlert alloc] init];
-    [alert addButtonWithTitle:@"Restart"];
-    [alert addButtonWithTitle:@"Cancel"];
-    [alert setMessageText:@"Restart F-Script?"];
-    [alert setInformativeText:@"F-Script needs to be restarted to change the memory management mode"];
-    [alert setAlertStyle:NSWarningAlertStyle];
-    
-    if ([alert runModal] == NSAlertFirstButtonReturn) 
-    {
-      // Restart clicked
-      
-      [[NSUserDefaults standardUserDefaults] setBool:[runWithObjCAutomaticGarbageCollectionUI state] forKey:@"FScriptRunWithObjCAutomaticGarbageCollection"];
-      [[NSUserDefaults standardUserDefaults] synchronize];
-            
-      RestartWithCorrectGarbageCollectionSettingIfNecessary();
-    }
-    else
-    {
-      // Cancel clicked
-      
-      [runWithObjCAutomaticGarbageCollectionUI setState:[[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptRunWithObjCAutomaticGarbageCollection"]]; 
-    }
-    
-    [alert release];
   }
 }
 

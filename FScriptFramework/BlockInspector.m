@@ -130,7 +130,7 @@ static NSPoint topLeftPoint = {0,0}; // Used for cascading windows.
         [arguments addObject:[result result]];
       else
       {
-        NSMutableString *errorArgumentString = [NSString stringWithFormat:@"Argument %ld %@", (long)(i+1), [result errorMessage]];
+        NSString *errorArgumentString = [NSString stringWithFormat:@"Argument %ld %@", (long)(i+1), [result errorMessage]];
         [[messageView documentView] setString:@""];
         [result inspectBlocksInCallStack];
         [f selectTextAtIndex:i];
