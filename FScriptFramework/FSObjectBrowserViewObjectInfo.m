@@ -1463,14 +1463,14 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
   
   FSObjectBrowserViewObjectHelper *objectHelper = [[FSObjectBrowserViewObjectHelper alloc] initWithObjectBrowserView:self];
   [objectHelper fillMatrix:m withObject:object];
-  
+
   [self addBlankRowToMatrix:m];
   [self fillMatrix:m withMethodsForObject:object];
 
   [m sizeToCells];
   //[m scrollCellToVisibleAtRow:[matrix selectedRow] column:0];
   [m setNeedsDisplay];
-                    
+
   [objectHelper release];
 }
 
@@ -1523,7 +1523,7 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
       return nil;
     }
     
-    view = [theView autorelease];
+    view = [[theView retain] autorelease];
   }
   
   return self;
@@ -1532,7 +1532,6 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
 - (void)dealloc
 {
   [baseClasses release];
-  
   [super dealloc];
 }
 
@@ -1556,7 +1555,7 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
   
   if (selectedObject == object && [selectedClassLabel isEqualToString:@""] && [selectedLabel isEqualToString:@""])
     [m selectCellAtRow:[m numberOfRows]-1 column:0];
-  
+
   if (object != nil && object == [object class]) // object is a class
   {
     NSMutableArray *classNames = [NSMutableArray array];
@@ -1567,11 +1566,11 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
     {
       for (i = 0; i < count; i++)
       {
-#ifdef __LP64__	
+#ifdef __LP64__
         if (class_getSuperclass(classes[i]) == object) [classNames addObject:NSStringFromClass(classes[i])];
 #else
         if (classes[i]->super_class == object) [classNames addObject:NSStringFromClass(classes[i])];
-#endif	  
+#endif
       }
     }
     @finally
@@ -1582,7 +1581,7 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
     
     [view addBlankRowToMatrix:m];
     
-#ifdef __LP64__	
+#ifdef __LP64__
     if (class_getSuperclass(object) == nil) [view addLabelAlone:@"This class is a root class" toMatrix:m];
     else [view addObject:class_getSuperclass((Class)object) withLabel:@"Superclass" toMatrix:m classLabel:@"" selectedClassLabel:selectedClassLabel selectedLabel:selectedLabel selectedObject:selectedObject];
 #else
@@ -1621,7 +1620,7 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
     ADD_OBJECT(              [o managedObjectContext]               ,@"Managed object context")
     ADD_OBJECT(              [o objectID]                           ,@"Object ID")
   }
-  else if (([object isKindOfClass:[NSArray class]] || [object isKindOfClass:[NSDictionary class]] || [object isKindOfClass:[NSSet class]]) 
+  else if (([object isKindOfClass:[NSArray class]] || [object isKindOfClass:[NSDictionary class]] || [object isKindOfClass:[NSSet class]])
            && [object count] < 500 ) // We display the elements only if there is less than a certain number of them
   {  
     [view addBlankRowToMatrix:m];
@@ -1751,7 +1750,7 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
     //[self addObject:[NSNumber numberWithInteger:o->firstCharIndex] withLabel:@"Index of first character in source code" toMatrix:m classLabel:@"" selectedClassLabel:selectedClassLabel selectedLabel:selectedLabel selectedObject:selectedObject];           
     //[self addObject:[NSNumber numberWithInteger:o->lastCharIndex]  withLabel:@"Index of last character in source code" toMatrix:m classLabel:@"" selectedClassLabel:selectedClassLabel selectedLabel:selectedLabel selectedObject:selectedObject];           
   }
-  
+
   /////////////////// Objective-C 2.0 declared properties ///////////////////
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FScriptAutomaticallyIntrospectDeclaredProperties"])
   {
@@ -1790,7 +1789,7 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
         cls = [cls superclass];     
     }    
   }
-  
+
   /////////////////// Bindings ///////////////////
   if ([object respondsToSelector:@selector(exposedBindings)] && [object respondsToSelector:@selector(infoForBinding:)])
   {
@@ -1831,7 +1830,7 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
       }
     }
   }
-  
+
   for (Class baseClass in self.baseClasses) {
     if ([object isKindOfClass:baseClass]) {
       NSString *method = [NSString stringWithFormat:@"add%@:", [baseClass className]];
@@ -1849,7 +1848,7 @@ static id objectFromWritingDirection(NSWritingDirection writingDirection)
 - (NSMutableArray *)baseClasses
 {
   if (!baseClasses) {
-    baseClasses = [NSMutableArray arrayWithObjects:
+    baseClasses = [[NSMutableArray alloc] initWithObjects:
                    [FSGenericPointer class],
                    [FSObjectPointer class],
                    [NSAffineTransform class],

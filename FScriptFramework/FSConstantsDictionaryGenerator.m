@@ -2,66 +2,6 @@
 /*   This software is open source. See the license.     */   
  
 #import "FSConstantsDictionaryGenerator.h"
-#import <AddressBook/AddressBook.h>
-#import <AddressBook/ABGlobalsC.h>
-#import <AddressBook/ABPeoplePickerView.h>
-#import <AddressBook/ABPeoplePickerC.h>
-#import <AddressBook/ABGlobals.h>
-#import <AppKit/AppKit.h> 
-#import <AppKit/NSAccessibility.h>
-#import <AppKit/NSTypesetter.h>
-#import <AppKit/NSMovieView.h> 
-#import <Automator/Automator.h>
-#import <CalendarStore/CalendarStore.h>
-#import <CoreAudioKit/CoreAudioKit.h>
-//#import <CoreLocation/CoreLocation.h>
-//#import <CoreWLAN/CoreWLAN.h>
-#import <DiscRecording/DiscRecording.h>
-#import <DirectoryService/DirectoryService.h>
-#import <DiscRecording/DiscRecording.h>
-#import <DiscRecordingUI/DiscRecordingUI.h>
-#import <DVDPlayback/DVDPlayback.h>
-#import <ExceptionHandling/NSExceptionHandler.h>
-#import <Foundation/Foundation.h>
-#import <Foundation/NSDebug.h>
-#import <ICADevices/ICADevices.h>
-//#import <ImageCaptureCore/ImageCaptureCore.h>
-#import <InputMethodKit/InputMethodKit.h>
-#import <InstallerPlugins/InstallerPlugins.h>
-#import <InstantMessage/IMService.h>
-#import <InstantMessage/IMAVManager.h>
-#import <IOBluetooth/IOBluetooth.h>
-#import <IOBluetooth/objc/IOBluetoothHandsFreeGateway.h>
-#import <IOBluetooth/objc/IOBluetoothRFCOMMAudioController.h>
-#import <IOBluetoothUI/IOBluetoothUI.h>
-#import <JavaScriptCore/JavaScriptCore.h>
-//#import <JavaVM/JavaVM.h>
-#import <LatentSemanticMapping/LatentSemanticMapping.h>
-#import <Message/NSMailDelivery.h>
-//#import <OpenDirectory/OpenDirectory.h>
-#import <OpenGL/OpenGL.h>
-#import <OpenGL/glu.h>
-//#import <OpenGL/CGLProfilerFunctionEnum.h> // missing in 10.8 SDK
-//#import <OpenGL/CGLProfiler.h>  // missing in 10.8 SDK
-#import <OpenGL/CGLRenderers.h>
-#import <OSAKit/OSAKit.h>
-#import <PreferencePanes/PreferencePanes.h>
-#import <PubSub/PubSub.h>
-#import <Quartz/Quartz.h>
-#import <QuartzCore/QuartzCore.h>
-#import <QTKit/QTKit.h>
-#import <QTKit/QTMovie.h>
-#import <ScreenSaver/ScreenSaver.h>
-#import <SecurityFoundation/SFAuthorization.h>
-#import <SecurityInterface/SFAuthorizationView.h>
-#import <SecurityInterface/SFAuthorizationPluginView.h>
-//#import <ServerNotification/NSServerNotificationCenter.h>
-#import <SyncServices/SyncServices.h>
-#import <SystemConfiguration/SystemConfiguration.h>
-#import <WebKit/WebKit.h>
-#import <WebKit/WebJavaPlugIn.h>
-//#import <XgridFoundation/XgridFoundation.h>
-
 #import "Number_fscript.h"
 #import "FSBoolean.h"
 

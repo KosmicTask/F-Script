@@ -144,6 +144,15 @@ static NSMutableCharacterSet *letterDigitUnderscoreCharacterSet;
   }
 } 
 
+- (id)initWithFrame:(NSRect)frameRect textContainer:(NSTextContainer *)container
+{
+  if ((self = [super initWithFrame:frameRect textContainer:container])) {
+    [self setAutomaticDashSubstitutionEnabled:NO];
+    [self setAutomaticQuoteSubstitutionEnabled:NO];
+  }
+  return self;
+}
+
 - (NSArray *)completionsForPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)index
 {
   NSString *stringToComplete;
